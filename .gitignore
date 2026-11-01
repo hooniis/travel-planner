@@ -1,0 +1,13 @@
+# 여행 데이터는 각 여행 폴더에만 두고 올리지 않아요
+trip.json
+*.pdf
+*.png
+*.jpg
+*_여행.html
+weather_cache.json
+.accuweather_key
+.share_password
+.staticrypt.json
+__pycache__/
+.DS_Store
+!example/trip.json

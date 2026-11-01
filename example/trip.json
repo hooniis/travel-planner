@@ -1,0 +1,86 @@
+{
+  "title": "다낭",
+  "slug": "2701-danang",
+  "subtitle": "2027.01.10 – 01.13 · 3박 4일",
+  "start": "2027-01-10",
+  "end": "2027-01-13",
+  "travelers": ["홍길동 (HONG/GILDONG)", "김철수 (KIM/CHEOLSU)"],
+
+  "weather": { "lat": 16.05, "lon": 108.22, "from": "2027-01-11", "to": "2027-01-13", "timezone": "Asia/Ho_Chi_Minh" },
+
+  "flights": [
+    {
+      "label": "가는 편",
+      "airline": "예시항공",
+      "no": "XX101",
+      "from": { "code": "ICN", "city": "인천", "terminal": "T1", "date": "2027-01-10", "time": "19:00" },
+      "to":   { "code": "DAD", "city": "다낭", "terminal": "T2", "date": "2027-01-10", "time": "22:00" },
+      "duration": "5시간",
+      "pnr": "ABC123",
+      "agencyRef": "AGENCY1",
+      "cabin": "일반석",
+      "baggage": "위탁 15kg",
+      "tickets": [{ "name": "홍길동", "number": "0000000000001" }],
+      "seatNote": "좌석 미지정"
+    }
+  ],
+
+  "hotels": [
+    {
+      "name": "Example Beach Resort",
+      "nameKo": "예시 비치 리조트",
+      "checkin": "2027-01-10",
+      "checkinTime": "14:00",
+      "checkout": "2027-01-13",
+      "checkoutTime": "12:00",
+      "room": "디럭스 · 성인 2",
+      "bookingId": "000000000",
+      "via": "Agoda",
+      "guest": "HONG GILDONG",
+      "phone": "+840000000000",
+      "address": "Example Street, Da Nang",
+      "map": "https://maps.google.com/?q=Da+Nang",
+      "includes": "조식, Wi-Fi",
+      "breakfast": "06:30–10:00",
+      "dining": ["메인 레스토랑 · 07:00–22:00"],
+      "shuttle": "시내 셔틀 10:00 / 15:00",
+      "policy": "환불 불가",
+      "remarks": "금연",
+      "note": "공항에서 차로 20분"
+    }
+  ],
+
+  "days": [
+    {
+      "date": "2027-01-11",
+      "title": "시내 구경",
+      "items": [
+        { "time": "09:00", "text": "조식", "tag": "hotel" },
+        { "time": "11:00", "text": "용다리 구경", "note": "링크 예시",
+          "links": [{ "label": "용다리", "url": "https://maps.google.com/?q=Dragon+Bridge+Da+Nang" }] },
+        { "time": "14:00", "text": "마사지 90분", "warn": "예약 필요 (경고 표시 예시)" },
+        { "time": "19:00", "text": "저녁", "done": "예약 완료 (완료 표시 예시)" }
+      ],
+      "route": [
+        { "label": "용다리", "query": "Dragon Bridge Da Nang", "ll": [16.0614, 108.2272] },
+        { "label": "한시장", "query": "Han Market Da Nang", "ll": [16.0681, 108.2240] },
+        { "label": "장소 미정 (지도엔 안 찍혀요)" }
+      ]
+    }
+  ],
+
+  "documents": [
+    { "group": "이심", "info": [["상품", "베트남 무제한 3일"], ["사용 기간", "1/11 – 1/13"]] },
+    { "group": "항공", "title": "전자항공권 (PDF는 여행 폴더에 두고 file로 지정)", "todo": "예: \"file\": \"ticket.pdf\"" },
+    { "group": "기타", "title": "온라인 링크 문서", "url": "https://example.com" }
+  ],
+
+  "contacts": [
+    { "name": "영사콜센터 (24시간)", "phone": "+82232100404" }
+  ],
+
+  "checklist": [
+    "여권 유효기간 확인",
+    { "text": "완료한 항목은 이렇게", "done": true }
+  ]
+}
