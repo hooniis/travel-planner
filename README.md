@@ -7,6 +7,7 @@
 - 일정마다 구글 지도 링크, 하루 동선 지도 (번호 핀 + 구글 길찾기)
 - PDF는 이미지로 넣어서 누르면 바로 펼쳐져요. 원본도 받을 수 있어요
 - 날씨: AccuWeather를 기본으로, ECMWF·GFS·JMA·ICON·MET Norway·wttr.in과 비교해요 (빌드할 때마다 갱신)
+- 비용: 결제 완료 금액과 현지 예상 범위를 원화로 합산
 - 라이트·다크 모드, 모바일 화면
 
 ## 구조
@@ -61,6 +62,7 @@ python3 publish.py ~/Documents/2701\ 다낭         # 암호화해서 공유 링
 | `days[].items[]` | `time`, `text`, `note`, `tag`(`flight`/`hotel`), `links[]`, `warn`(경고), `done`(완료), `todo` |
 | `days[].route[]` | 동선. `ll`(좌표)이 있으면 지도에 핀, 없으면 목록에만 나와요 |
 | `documents[]` | `file`(PDF·이미지), `url`, `info`(표), `todo`(아직 없음) 중 하나 |
+| `budget` | `krwPerVnd`(환율), `items[]`: `name`, `krw` 또는 `vnd`(숫자나 [최소, 최대]), `status: "paid"`(결제 완료) |
 | `contacts[]`, `checklist[]` | 연락처, 체크리스트 (`{"text", "done": true}`로 완료 표시) |
 
 ## 보안

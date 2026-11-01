@@ -183,6 +183,53 @@ def section_docs(trip):
     return "".join(out)
 
 
+def section_budget(budget):
+    """확정(결제 완료) 금액과 예상 범위를 원화로 합산. vnd 값은 rate로 환산해요."""
+    rate = budget.get("krwPerVnd", 0)
+
+    def krw_range(it):
+        if "krw" in it:
+            v = it["krw"]
+        elif "vnd" in it:
+            v = [x * rate for x in it["vnd"]] if isinstance(it["vnd"], list) else it["vnd"] * rate
+        else:
+            return None
+        return (v, v) if not isinstance(v, list) else tuple(v)
+
+    def won(lo, hi, exact=False):  # 예상치만 천 원 단위로 반올림
+        f = (lambda x: f"{x:,.0f}") if exact else (lambda x: f"{round(x, -3):,.0f}")
+        return f"{f(lo)}원" if f(lo) == f(hi) else f"{f(lo)}~{f(hi)}원"
+
+    rows, paid, est = [], 0, [0, 0]
+    for it in budget["items"]:
+        r = krw_range(it)
+        vnd = it.get("vnd")
+        sub = (f"{vnd[0]:,}~{vnd[1]:,}동" if isinstance(vnd, list) else f"{vnd:,}동") if vnd else ""
+        note = " · ".join(x for x in (sub, it.get("note", "")) if x)
+        if r is None:
+            amount, cls = "금액 미입력", "muted"
+        elif it.get("status") == "paid":
+            paid += r[0]
+            amount, cls = won(*r, exact=True), "paid"
+        else:
+            est[0] += r[0]
+            est[1] += r[1]
+            amount, cls = won(*r), "est"
+        tag = "<span class='pill'>결제 완료</span>" if it.get("status") == "paid" else ""
+        rows.append(f"<li class='b-{cls}'><div><div>{esc(it['name'])} {tag}</div>"
+                    f"{f'<div class=note>{esc(note)}</div>' if note else ''}</div><b>{amount}</b></li>")
+    return f"""
+<article class="card budget">
+  <div class="totals">
+    <div><div class="muted small">결제 완료</div><b>{won(paid, paid, exact=True)}</b></div>
+    <div><div class="muted small">현지 예상</div><b>{won(*est)}</b></div>
+    <div><div class="muted small">합계 (2인)</div><b>{won(paid + est[0], paid + est[1])}</b></div>
+  </div>
+  <ul class="budget-list">{''.join(rows)}</ul>
+  <p class="hint">{esc(budget.get('note'))}</p>
+</article>"""
+
+
 def section_info(trip):
     contacts = "".join(f"<li><span>{esc(c['name'])}</span>{tel(c['phone'])}</li>" for c in trip["contacts"])
     checks = "".join(
@@ -265,6 +312,13 @@ details.doc[open] summary .muted{visibility:hidden}
 .pin{background:var(--accent);color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;line-height:22px;text-align:center;font:700 13px/22px sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.4)}
 .day ol.stops{list-style:decimal;margin:8px 0;padding-left:22px;font-size:14px}
 .btn{display:block;text-align:center;padding:10px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;margin-bottom:6px}
+.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.totals b{font-size:16px;font-variant-numeric:tabular-nums}
+.budget-list{list-style:none;margin:0;padding:0}
+.budget-list li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.budget-list b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.b-est b{color:var(--muted)}
+.b-muted b{color:var(--warn);font-weight:400;font-size:13px}
 .contacts,.checks{list-style:none;margin:0;padding:0}
 .contacts li{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line)}
 .contacts li:first-child{border-top:0}
@@ -325,11 +379,12 @@ def build():
 <style>{CSS}</style></head>
 <body data-start="{trip['start']}" data-end="{trip['end']}"><div class="wrap">
 <div class="hero"><h1>{esc(trip['title'])}</h1><p>{esc(trip['subtitle'])}</p><span class="dday" id="dday"></span></div>
-<nav><a href="#plan">일정</a><a href="#flight">항공</a><a href="#hotel">숙소</a><a href="#docs">문서</a><a href="#info">연락처·체크</a></nav>
+<nav><a href="#plan">일정</a><a href="#flight">항공</a><a href="#hotel">숙소</a><a href="#docs">문서</a>{'<a href="#budget">비용</a>' if trip.get('budget') else ''}<a href="#info">연락처·체크</a></nav>
 <section id="plan"><h2>일정</h2>{section_days(trip, weather)}</section>
 <section id="flight"><h2>항공</h2>{section_flights(trip)}</section>
 <section id="hotel"><h2>숙소</h2>{section_hotels(trip)}</section>
 <section id="docs"><h2>문서</h2>{section_docs(trip)}</section>
+{f'<section id="budget"><h2>비용</h2>{section_budget(trip["budget"])}</section>' if trip.get('budget') else ''}
 <section id="info"><h2>연락처 · 체크리스트</h2>{section_info(trip)}</section>
 <p class="muted small center">생성 {dt.datetime.now():%Y-%m-%d %H:%M}</p>
 </div><script>{JS}{LEAFLET_JS}</script></body></html>"""
